@@ -1,0 +1,56 @@
+#include <iostream>
+#include <string>
+#include <fstream> // this is to open text files
+#include <sstream> // to use isstringstream functionality
+#include <vector>
+#include <iomanip> // to keep the format of numbers right
+
+namespace Icmbuild
+{
+    extern char version[];
+    extern char years[];
+    extern char author[];
+};
+
+void usage(std::string const &progname);
+
+using namespace std;
+
+// class declarations
+#include "../extractEyeTrackingData/dataline/dataline.h"
+// #include "../extractEyeTrackingData/trialinfo/trialinfo.h"
+#include "trialinfo/trialinfo.h"
+#include "../extractEyeTrackingData/interpdata/interpdata.h"
+
+
+size_t checkBlinksAndGetInterpBounds(string filename, string nameOutputfile, string& lock2);
+double vectorMedian(vector<double> dataArray);
+
+size_t processData(string trialInfoFile, string filename, size_t timeBefore, string& lock2);
+// TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, ofstream& outputfile, 
+// 														TrialInfo trialSet, Dataline preBlink, Interpdata interpolation, 
+// 														size_t timeBefore, string& lock2);
+
+TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, 
+														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
+														Interpdata interpolation, string& lock2);
+// bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata interpolation, size_t timeBefore);
+bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata interpolation);
+// size_t interpolateShortBlinks(ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
+// 															Dataline postBlink, size_t lines2interp, size_t timeBefore);
+size_t interpolateShortBlinks(ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
+															Dataline postBlink, size_t lines2interp);
+
+double linearInterpolate(double y1, double y2, double mu);
+
+void writeOut(Dataline eye, ofstream& outputfile, TrialInfo trialSet);
+
+size_t binData(string filename, size_t lines2bin);
+double vectorMean(vector<double> values);
+
+size_t average200BeforeVisualOnset(string filename, size_t interval4baseline, string& line2search);
+size_t averageFirst200(string filename, size_t interval4baseline, string& lock2);
+void exportBaseline(vector<double> psize, string subID, string trialNum, ofstream& outputfile);
+
+Interpdata updateInterpolation(Interpdata interpolation, TrialInfo trialSet, 
+															 string& line, ifstream& interpInfo);
