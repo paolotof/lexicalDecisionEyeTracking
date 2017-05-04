@@ -24,7 +24,8 @@ size_t processData(string TrialInfoFile, string filename, size_t timeBefore, str
 	outputfile.open(filename);
 	// write file's header
 	outputfile << "pp" << '\t' << "clockTime" << '\t'  << "time" << '\t'
-		<< "bin" << '\t' <<  "wordNonWord" << '\t' << "trial" << '\t' 
+// 		<< "bin" << '\t' 
+		<<  "wordNonWord" << '\t' << "trial" << '\t' 
 		<< "item" << '\t' << "psize"  << '\t' << "fix\n" /*<< '\t'  
 		<< "RT" << '\t' << "acc\n"*/;  
 		
@@ -203,4 +204,5 @@ size_t processData(string TrialInfoFile, string filename, size_t timeBefore, str
   outputfile.close();
   
   return 1;
+// 	return(filename);
 }

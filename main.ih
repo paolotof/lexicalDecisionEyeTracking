@@ -54,3 +54,11 @@ void exportBaseline(vector<double> psize, string subID, string trialNum, ofstrea
 
 Interpdata updateInterpolation(Interpdata interpolation, TrialInfo trialSet, 
 															 string& line, ifstream& interpInfo);
+
+void baselineOne();
+double findMatchingBaseline(string& pp, size_t trial, ifstream& baselineFile);
+void baselineTwo();
+double findMatchingPp(string& pp, ifstream& baselineFile);
+void baselineOneAndTwo(string& outputfileName);
+
+size_t extractSaccades(string TrialInfoFile, string filename, string& lock2);

@@ -12,7 +12,7 @@ void writeOut(Dataline eye, ofstream& outputfile, TrialInfo trialSet)
 	outputfile.precision(old_precision);
 // 	outputfile << '\t' << static_cast<size_t>(timeDif)
 	outputfile << '\t' << timeDif
-		<< '\t' << static_cast<int>(timeDif / 4)
+// 		<< '\t' << static_cast<int>(timeDif / 4)
 // 		<< '\t' << trialSet.totalBins()
 		<< '\t' << trialSet.g_condition() 
 		<< '\t' << trialSet.g_trialIN() 
