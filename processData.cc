@@ -1,40 +1,34 @@
 #include "main.ih"
 
-size_t processData(string TrialInfoFile, string filename, size_t timeBefore, string& lock2)
-{
-  
-  string trialInfo;
-	ifstream trialInfoFile(TrialInfoFile);
-	if (trialInfoFile.is_open())
-		getline(trialInfoFile, trialInfo);
-	else
-	{
-		cout << "Unable To Open "<< TrialInfoFile << '\n';
-		return 0;
-	}  
-// 	TrialInfo trialSet();
-// 	size_t limit4extraction = 4000;
-	TrialInfo trialSet(timeBefore, 4000);
-	trialSet.extractInfo(trialInfo);
-  trialSet.updateInterp(false);
-  string subNum = trialSet.g_subject();  
+/*
+ cd /disk2/cPlusPlusDeveloping/extractEyeTrackingData_lexicalDecision/
+ 
+ */ 
 
-	ofstream outputfile;
-	filename.append("_ALL_medianInterp.asc");
-	outputfile.open(filename);
-	// write file's header
-	outputfile << "pp" << '\t' << "clockTime" << '\t'  << "time" << '\t'
-// 		<< "bin" << '\t' 
-		<<  "wordNonWord" << '\t' << "trial" << '\t' 
-		<< "item" << '\t' << "psize"  << '\t' << "fix\n" /*<< '\t'  
-		<< "RT" << '\t' << "acc\n"*/;  
-		
-	ifstream interpInfo("tbt_blinksPerSubjectSmaller300.txt");
+// size_t processData(string TrialInfoFile, string filename, 
+// 									 size_t timeBefore, string& lock2, 
+// 									 size_t limit4extraction, string& filePrefix)
+size_t processData(files filenames, string filename, 
+									 size_t timeBefore, string& lock2, 
+									 size_t limit4extraction, string& filePrefix)
+{
+// make sure that trialinfofile and interpolation file have the same information
+	string TrialInfoFile = filenames.TrialInfoFile;
+	string interpolationFile = filenames.nameOutputfile; 
+	
+// 	interpolationFile += "clean_" + filePrefix + "blinksPerSubjectSmaller300.txt";
+// 	interpolationFile += clean_
+// 	interpolationFile += "blinksPerSubjectSmaller300.txt";
+// 	interpolationFile = eliminateRedundantTrials(TrialInfoFile, interpolationFile);
+// 	if (interpolationFile.find("none") != string::npos)
+// 		return 0;
+// 	string interpolationFile;
+// 	interpolationFile = 
+	ifstream interpInfo(interpolationFile);
 	Interpdata interpolation; // interpolation.interpolate() set to false unless interpolation file exists
 	if (not interpInfo.is_open())
   {
-// 		cout << "NO interpolation file "<< interpolationFile << '\n'; 
-		cout << "NO interpolation file tbt_blinksPerSubjectSmaller300.txt\n"; 
+		cout << "NO interpolation file " << interpolationFile << "\n"; 
 		cout << "Continue without interpolation information\n\n"; 
   } else {
 		interpolation.setDoInterpolation(true); //interpolation.interpolate() set to true
@@ -44,6 +38,29 @@ size_t processData(string TrialInfoFile, string filename, size_t timeBefore, str
 		if (interpInfo.good())
 			interpolation = interpolation.extractInterpData(line1, line2);
 	}
+// start data processing
+  string trialInfo;
+	ifstream trialInfoFile(TrialInfoFile);
+	if (trialInfoFile.is_open())
+		getline(trialInfoFile, trialInfo);
+	else
+	{
+		cout << "Unable To Open "<< TrialInfoFile << '\n';
+		return 0;
+	}  
+	TrialInfo trialSet(timeBefore, limit4extraction);
+	trialSet.extractInfo(trialInfo);
+  trialSet.updateInterp(false);
+	string subNum = trialSet.g_subject();  
+	ofstream outputfile;
+	filename.append("_ALL_medianInterp.asc");
+	outputfile.open(filename);
+// write file's header
+	outputfile << "pp" << '\t' << "clockTime" << '\t'  << "time" << '\t'
+// 		<< "bin" << '\t' 
+		<<  "wordNonWord" << '\t' << "trial" << '\t' 
+		<< "item" << '\t' << "psize"  << '\t' << "fix\n" /*<< '\t'  
+		<< "RT" << '\t' << "acc\n"*/;  
 	
   while (true)
   {
@@ -88,38 +105,26 @@ size_t processData(string TrialInfoFile, string filename, size_t timeBefore, str
 // 				{
 // 					cout << 's' << trialSet.g_currentTr() << ' ' << trialSet.g_updateInterp() << '|'; 
 // 				}	
-				if (trialSet.g_currentTr() == trialSet.g_trialIN())
-				{
-					if (line.find("TRIAL ENDS") != string::npos)
-					{
+				if (trialSet.g_currentTr() == trialSet.g_trialIN()){
+					if (line.find("TRIAL ENDS") != string::npos){
 						trialSet.resetAndUpdate(trialInfoFile);
 						// interrupt if the data for another subject has been read
 // 						cout << subNum << ' ' << trialSet.g_subject() << '\n';
-						if (subNum.substr(0, subNum.find(".asc")) != trialSet.g_subject())
-						{
+						if (subNum.substr(0, subNum.find(".asc")) != trialSet.g_subject()){
 							eyetrackingFile.close();
-							break;
-						}
-					}
+							break; } }
 					
-					if (line.find("SBLINK") != string::npos)
-					{
-						
+					if (line.find("SBLINK") != string::npos){
 						trialSet = interpolateBlinks(trialInfoFile, eyetrackingFile, outputfile,
 																				 trialSet, preBlink, interpolation, lock2);
 // 						cout << trialSet.g_updateInterp() << 'i';
-						if (trialSet.g_updateInterp())
-						{
+						if (trialSet.g_updateInterp())						{
 							// read eyetrackingFile's lines up to the end of the interpolation interval
 							if (trialSet.g_subject() == interpolation.sub() && 
-								trialSet.g_currentTr() == interpolation.nTrial())
-							{
-								while (eye.g_time() < interpolation.iEnd())
-								{
+								trialSet.g_currentTr() == interpolation.nTrial()){
+								while (eye.g_time() < interpolation.iEnd()){
 									getline(eyetrackingFile, line);
-									eye.extractData(line);
-								}
-							}
+									eye.extractData(line); } }
 							// update information about the next interpolation
 							string line1, line2;
 							getline(interpInfo, line1);
@@ -137,23 +142,16 @@ size_t processData(string TrialInfoFile, string filename, size_t timeBefore, str
 					eye.extractData(line);
 					
 					if ((eye.isMSG() != true) && (eye.g_time() >= trialSet.g_startExport()) && 
-						(eye.g_time() <= trialSet.timeIsUp()))
-					{
-						if(eye.isValid())
-						{
+						(eye.g_time() <= trialSet.timeIsUp())) {
+						if (eye.isValid())	{
 							// participants with no interpolation can go without problems
-							if (trialSet.g_subject() != interpolation.sub())
-							{
+							if (trialSet.g_subject() != interpolation.sub()) {
 								trialSet.addOneBin();
 								writeOut(eye, outputfile, trialSet);
-							}
-							else
-							{  
-								if (eye.g_time() <= interpolation.iBegin())
-								{
+							} else {  
+								if (eye.g_time() <= interpolation.iBegin()) {
 									trialSet.addOneBin();
-									writeOut(eye, outputfile, trialSet);
-								} // end if-else: if (trialSet.g_subject() != interpolation.sub())
+									writeOut(eye, outputfile, trialSet); } // end if-else: if (trialSet.g_subject() != interpolation.sub())
 							} // end: if(eye.isValid())
 						} // end : if((eye.isMSG() != true) && (eye.g_time() >= (trialSet.g_targetOnset() - timeBefore)) && (eye.g_time() <= trialSet.timeIsUp()))
 					} // end of "if (!eye.isMSG && (eye.g_time() >= trialSet.g_targetOnset()))"
@@ -176,17 +174,17 @@ size_t processData(string TrialInfoFile, string filename, size_t timeBefore, str
 // 						not interpInfo.eof() )
 					if (trialSet.g_subject() == interpolation.sub() && 
 						trialSet.g_currentTr() > interpolation.nTrial() &&
-						not interpInfo.eof() )
-					{
-						cout << line;
-						cout << "skipping lines\n";
+						not interpInfo.eof() ) {
+// 						cout << line << '\n';
+// 						cout << trialSet.g_subject() << " . " << interpolation.sub() << '\n';
+						cout << "skipping lines " << trialSet.g_subject() << ' '
+						  << trialSet.g_currentTr() << ' ' << interpolation.nTrial() << '\n';
 						string line1, line2;
 						getline(interpInfo, line1);
 						getline(interpInfo, line2);
 						interpolation.setSub("none"); // why initialization to none?
 						if (interpInfo.good())
 							interpolation = interpolation.extractInterpData(line1, line2);
-						
 					}// if (interpolation.interpolate() && ...
 				} // end of "if (iTrial == trialSet.g_trialIN())"
       } // end of "while(getline(eyetrackingFile, line))"

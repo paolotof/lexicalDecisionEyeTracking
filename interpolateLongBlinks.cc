@@ -7,7 +7,7 @@ bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata 
 //   cout << "L";
   bool updateInterp = false;
   // interpolate
-  size_t lines2interp = (interpolation.iEnd() - interpolation.iBegin()) / 4;
+  size_t lines2interp = (interpolation.iEnd() - interpolation.iBegin()) / 4; // is this always a round number?
   double dataArray[4] = {0, 0, 0, 0};
 // 	for (double iter = lines2interp; iter > 0; --iter)
 	for (double iter = lines2interp; iter >= 0; --iter)

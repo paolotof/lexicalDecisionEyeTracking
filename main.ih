@@ -22,22 +22,28 @@ using namespace std;
 #include "trialinfo/trialinfo.h"
 #include "../extractEyeTrackingData/interpdata/interpdata.h"
 
+struct files {
+	string TrialInfoFile;
+	string nameOutputfile; 
+};
 
-size_t checkBlinksAndGetInterpBounds(string filename, string nameOutputfile, string& lock2);
+// string checkBlinksAndGetInterpBounds(string filename, string nameOutputfile, string& lock2);
+files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameOutputfile, string& lock2);
+
 double vectorMedian(vector<double> dataArray);
 
-size_t processData(string trialInfoFile, string filename, size_t timeBefore, string& lock2);
-// TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, ofstream& outputfile, 
-// 														TrialInfo trialSet, Dataline preBlink, Interpdata interpolation, 
-// 														size_t timeBefore, string& lock2);
+// size_t processData(string trialInfoFile, string filename, size_t timeBefore,
+// 									 string& lock2, size_t limit4extraction, string& filePrefix);
+size_t processData(files filenames, string filename, 
+									 size_t timeBefore, string& lock2, 
+									 size_t limit4extraction, string& filePrefix);
 
 TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, 
 														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
 														Interpdata interpolation, string& lock2);
-// bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata interpolation, size_t timeBefore);
+
 bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata interpolation);
-// size_t interpolateShortBlinks(ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
-// 															Dataline postBlink, size_t lines2interp, size_t timeBefore);
+
 size_t interpolateShortBlinks(ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
 															Dataline postBlink, size_t lines2interp);
 
@@ -55,10 +61,17 @@ void exportBaseline(vector<double> psize, string subID, string trialNum, ofstrea
 Interpdata updateInterpolation(Interpdata interpolation, TrialInfo trialSet, 
 															 string& line, ifstream& interpInfo);
 
-void baselineOne();
-double findMatchingBaseline(string& pp, size_t trial, ifstream& baselineFile);
-void baselineTwo();
-double findMatchingPp(string& pp, ifstream& baselineFile);
-void baselineOneAndTwo(string& outputfileName);
+// // void baselineOne();
+// double findMatchingBaseline(string& pp, size_t trial, ifstream& baselineFile);
+// // void baselineTwo();
+// double findMatchingPp(string& pp, ifstream& baselineFile);
+// // void baselineOneAndTwo(string& outputfileName);
+double matchBaselines(string& pp, size_t trial, string baseline2read);
+
+// void ERDD_withBase123(string& outputfileName, size_t timeBefore);
+void ERDD_withBase123(string& filePrefix, string& outputfileName, size_t timeBefore);
+size_t baselineBeforeTarget(string filename, string& eye2read, 
+														size_t interval4baseline);
+string eliminateRedundantTrials(string& trial2beIncluded, string& interpolationFile);
 
 size_t extractSaccades(string TrialInfoFile, string filename, string& lock2);

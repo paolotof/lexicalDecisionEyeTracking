@@ -27,7 +27,7 @@ void TrialInfo::extractInfo(string& line)
 	
 	// 1 - transform reaction times in ms
 	// 2 - add 1000 ms to extend the amount of data exported
-	TrialInfo::setLimit4extraction(static_cast<size_t>(RT * 1000));
+	TrialInfo::setLimit4extraction(static_cast<size_t>(RT * 1000) + 1000);
 	
 // 	cout << RT  << ' ' << (RT * 1000)  << ' '<< static_cast<size_t>(RT * 1000) << ' ' << TrialInfo::limit4extraction();
 // 	cout << TrialInfo::limit4extraction();
