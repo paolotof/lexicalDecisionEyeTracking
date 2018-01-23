@@ -1,0 +1,19 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+namespace Icmbuild
+{
+    extern char version[];
+    extern char years[];
+    extern char author[];
+};
+
+void usage(std::string const &progname);
+
+using namespace std;
+
+vector<int> findOnsets(string& file2read);
+void writeFile(string& file2read, vector<int> onsetTimes, string& filename);

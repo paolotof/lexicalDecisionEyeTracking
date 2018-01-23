@@ -5,30 +5,15 @@
  
  */ 
 
-// size_t processData(string TrialInfoFile, string filename, 
-// 									 size_t timeBefore, string& lock2, 
-// 									 size_t limit4extraction, string& filePrefix)
 size_t processData(files filenames, string filename, 
 									 size_t timeBefore, string& lock2, 
-									 size_t limit4extraction, string& filePrefix)
-{
-// make sure that trialinfofile and interpolation file have the same information
-	string TrialInfoFile = filenames.TrialInfoFile;
-	string interpolationFile = filenames.nameOutputfile; 
+									 size_t limit4extraction, string& filePrefix){
 	
-// 	interpolationFile += "clean_" + filePrefix + "blinksPerSubjectSmaller300.txt";
-// 	interpolationFile += clean_
-// 	interpolationFile += "blinksPerSubjectSmaller300.txt";
-// 	interpolationFile = eliminateRedundantTrials(TrialInfoFile, interpolationFile);
-// 	if (interpolationFile.find("none") != string::npos)
-// 		return 0;
-// 	string interpolationFile;
-// 	interpolationFile = 
-	ifstream interpInfo(interpolationFile);
+	ifstream interpInfo(filenames.nameOutputfile);
 	Interpdata interpolation; // interpolation.interpolate() set to false unless interpolation file exists
 	if (not interpInfo.is_open())
   {
-		cout << "NO interpolation file " << interpolationFile << "\n"; 
+		cout << "NO interpolation file " << filenames.nameOutputfile << "\n"; 
 		cout << "Continue without interpolation information\n\n"; 
   } else {
 		interpolation.setDoInterpolation(true); //interpolation.interpolate() set to true
@@ -40,12 +25,12 @@ size_t processData(files filenames, string filename,
 	}
 // start data processing
   string trialInfo;
-	ifstream trialInfoFile(TrialInfoFile);
+	ifstream trialInfoFile(filenames.TrialInfoFile);
 	if (trialInfoFile.is_open())
 		getline(trialInfoFile, trialInfo);
 	else
 	{
-		cout << "Unable To Open "<< TrialInfoFile << '\n';
+		cout << "Unable To Open "<< filenames.TrialInfoFile << '\n';
 		return 0;
 	}  
 	TrialInfo trialSet(timeBefore, limit4extraction);
@@ -74,6 +59,7 @@ size_t processData(files filenames, string filename,
     else
     {
 			cout << "Extracting " << subNum << '\n';
+			
 			if (interpolation.interpolate() && (trialSet.g_subject() > interpolation.sub()))
       {
 				while (trialSet.g_subject() != interpolation.sub() && not interpInfo.eof())
@@ -86,6 +72,7 @@ size_t processData(files filenames, string filename,
 						interpolation = interpolation.extractInterpData(line1, line2);
 				} // end while
 			} // end if (trialSet.g_subject() > interpolation.sub())
+			
       trialSet.setCurrentTr(0);
       trialSet.resetBinsCounter();
       trialSet.setFix(1);
@@ -172,20 +159,21 @@ size_t processData(files filenames, string filename,
 // 						trialSet.g_subject() == interpolation.sub() && 
 // 						trialSet.g_currentTr() > interpolation.nTrial() &&
 // 						not interpInfo.eof() )
-					if (trialSet.g_subject() == interpolation.sub() && 
-						trialSet.g_currentTr() > interpolation.nTrial() &&
-						not interpInfo.eof() ) {
-// 						cout << line << '\n';
-// 						cout << trialSet.g_subject() << " . " << interpolation.sub() << '\n';
-						cout << "skipping lines " << trialSet.g_subject() << ' '
-						  << trialSet.g_currentTr() << ' ' << interpolation.nTrial() << '\n';
-						string line1, line2;
-						getline(interpInfo, line1);
-						getline(interpInfo, line2);
-						interpolation.setSub("none"); // why initialization to none?
-						if (interpInfo.good())
-							interpolation = interpolation.extractInterpData(line1, line2);
-					}// if (interpolation.interpolate() && ...
+					// ??? IS THIS STILL NECESSARY ??? 
+// 					if (trialSet.g_subject() == interpolation.sub() && 
+// 						trialSet.g_currentTr() > interpolation.nTrial() &&
+// 						not interpInfo.eof() ) {
+// // 						cout << line << '\n';
+// // 						cout << trialSet.g_subject() << " . " << interpolation.sub() << '\n';
+// 						cout << "skipping lines " << trialSet.g_subject() << ' '
+// 						  << trialSet.g_currentTr() << ' ' << interpolation.nTrial() << '\n';
+// 						string line1, line2;
+// 						getline(interpInfo, line1);
+// 						getline(interpInfo, line2);
+// 						interpolation.setSub("none"); // why initialization to none?
+// 						if (interpInfo.good())
+// 							interpolation = interpolation.extractInterpData(line1, line2);
+// 					}// if (interpolation.interpolate() && ...
 				} // end of "if (iTrial == trialSet.g_trialIN())"
       } // end of "while(getline(eyetrackingFile, line))"
     } // end "if(! eyetrackingFile.is_open()") 

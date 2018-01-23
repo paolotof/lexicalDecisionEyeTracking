@@ -1,7 +1,8 @@
 #include "main.ih"
 
 // void ERDD_withBase123(string& outputfileName, size_t timeBefore)
-void ERDD_withBase123(string& filePrefix, string& outputfileName, size_t timeBefore)
+void ERDD_withBase123(string& filePrefix, string& outputfileName, 
+											size_t timeBefore, size_t baselineInt)
 {
 	string file;
 // 	file += string("RT_") + std::to_string(timeBefore) + "_ALL_medianInterp.asc";
@@ -49,13 +50,19 @@ void ERDD_withBase123(string& filePrefix, string& outputfileName, size_t timeBef
 		// update baselines when eyetracking file goes from one trial to the next
 		if (oldTrial != trial)
 		{
-			b1_psize = matchBaselines(pp, trial, (filePrefix + "0averageBeforeTarget200.asc"));
-			b3_psize = matchBaselines(pp, trial, (filePrefix + "0average200_BeforeVisualOnset.asc"));
+			b1_psize = matchBaselines(pp, trial, (filePrefix 
+			+ std::to_string(timeBefore) + "averageBeforeTarget" 
+			+ std::to_string(baselineInt) + ".asc"));
+			b3_psize = matchBaselines(pp, trial, (filePrefix 
+			+ std::to_string(timeBefore) + "average" 
+			+ std::to_string(baselineInt) + "_BeforeVisualOnset.asc"));
 		}
 		oldTrial = trial; // synchronizing to  eyetracking file
 		
 		if (oldPp != pp)
-			b2_psize = matchBaselines(pp, 1, (filePrefix + "0averageFirst200.asc"));
+			b2_psize = matchBaselines(pp, 1, (filePrefix 
+			+ std::to_string(timeBefore) + "averageFirst" 
+			+ std::to_string(baselineInt) + ".asc"));
 		oldPp = pp; // updating eyetracking file
 		
 		outputfile << pp  << '\t' << time  << '\t' << wordNonWord  

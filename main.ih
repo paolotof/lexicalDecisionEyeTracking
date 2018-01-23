@@ -69,7 +69,7 @@ Interpdata updateInterpolation(Interpdata interpolation, TrialInfo trialSet,
 double matchBaselines(string& pp, size_t trial, string baseline2read);
 
 // void ERDD_withBase123(string& outputfileName, size_t timeBefore);
-void ERDD_withBase123(string& filePrefix, string& outputfileName, size_t timeBefore);
+void ERDD_withBase123(string& filePrefix, string& outputfileName, size_t timeBefore, size_t baselineInt);
 size_t baselineBeforeTarget(string filename, string& eye2read, 
 														size_t interval4baseline);
 string eliminateRedundantTrials(string& trial2beIncluded, string& interpolationFile);
