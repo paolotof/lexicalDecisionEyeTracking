@@ -4,7 +4,7 @@ int main(int argc, char **argv)
 try
 {
 	string dir2save = "";
-	string filePrefix = "RT_wrongR2_";
+	string filePrefix = "XXX_wrongR2_";
 	string outputfile = dir2save + filePrefix;
 	string TrialInfoFile = "trials2beIncluded.txt";
 	// these strings could also be added to the structure with the file names, it's cleaner
@@ -46,7 +46,7 @@ try
 	filenames.nameOutputfile= interpolationFile;
 	
 // 	return 0;
-	processData(filenames, outputfile, timeBefore, 
+	newProcessData(filenames, outputfile, timeBefore, 
 							lock2, limit4extraction, filePrefix);
 	
 	//extractSaccades(TrialInfoFile, outputfile, lock2);
@@ -66,9 +66,9 @@ try
 // 	baselineBeforeTarget(outputfile, eye2read, baselineInt);
 	
 	return 0; // skip this, takes too long
-	string outputfileName = filePrefix + "eyeData_Baseline123.asc";
-	ERDD_withBase123(filePrefix, outputfileName, timeBefore, baselineInt);
-	binData(outputfileName, 5); //lines2bin = 5
+// 	string outputfileName = filePrefix + "eyeData_Baseline123.asc";
+// 	ERDD_withBase123(filePrefix, outputfileName, timeBefore, baselineInt);
+// 	binData(outputfileName, 5); //lines2bin = 5
 }
 catch (...)
 {

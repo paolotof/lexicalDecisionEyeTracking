@@ -34,13 +34,17 @@ double vectorMedian(vector<double> dataArray);
 
 // size_t processData(string trialInfoFile, string filename, size_t timeBefore,
 // 									 string& lock2, size_t limit4extraction, string& filePrefix);
-size_t processData(files filenames, string filename, 
+size_t newProcessData(files filenames, string filename, 
 									 size_t timeBefore, string& lock2, 
 									 size_t limit4extraction, string& filePrefix);
 
+Interpdata currentInterpInfo(TrialInfo trialSet, files filenames);
+
+// TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, 
+// 														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
+// 														Interpdata interpolation, string& lock2);
 TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, 
-														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 
-														Interpdata interpolation, string& lock2);
+														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, string& lock2);
 
 bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata interpolation);
 
