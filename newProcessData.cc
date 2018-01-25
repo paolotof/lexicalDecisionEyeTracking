@@ -1,10 +1,5 @@
 #include "main.ih"
 
-/*
- cd /disk2/cPlusPlusDeveloping/extractEyeTrackingData_lexicalDecision/
- 
- */ 
-
 size_t newProcessData(files filenames, string filename, 
 									 size_t timeBefore, string& lock2, 
 									 size_t limit4extraction, string& filePrefix){
@@ -15,8 +10,8 @@ size_t newProcessData(files filenames, string filename,
 // and trial, if we do not find it we proceed without interpolation
 	if (not interpInfo.is_open()) {
 		cout << "NO interpolation file " << filenames.nameOutputfile << "\n"; 
-		cout << "Continue without interpolation information\n\n"; } 
-  interpInfo.close(); 
+		cout << "Continue without interpolation information\n\n"; 
+		interpInfo.close(); } 
 	
 // start data processing
   string trialInfo;
@@ -66,13 +61,15 @@ size_t newProcessData(files filenames, string filename,
 				while ((line.find("EFIX") != string::npos) || (line.find("SAC") != string::npos))
 					getline(eyetrackingFile, line);
 				
-// 				if (line.find("onsetSoundStim") != string::npos)
 				if (line.find(lock2) != string::npos){
 					trialSet.updateCurrentTrial(line);
-					interpolation = currentInterpInfo(trialSet, filenames);
-				}	
-
+					// interpolation is false if the current trial does not have to be interpolated.
+					if (trialSet.g_currentTr() == trialSet.g_trialIN())
+						interpolation = currentInterpInfo(trialSet, filenames);
+				} // END: if (line.find(lock2) != string::npos){
+				
 				if (trialSet.g_currentTr() == trialSet.g_trialIN()){
+					
 					if (line.find("TRIAL ENDS") != string::npos){
 						trialSet.resetAndUpdate(trialInfoFile);
 						// interrupt if the data for another subject has been read
@@ -81,9 +78,9 @@ size_t newProcessData(files filenames, string filename,
 							eyetrackingFile.close();
 							break; } }
 					
-					if (line.find("SBLINK") != string::npos)/*{*/
+					if (line.find("SBLINK") != string::npos)
 						trialSet = interpolateBlinks(trialInfoFile, eyetrackingFile, outputfile,
-																				 trialSet, preBlink, lock2);
+																				 trialSet, preBlink, interpolation, lock2);
 // I don't think this is necessary since the script should skip the empty lines and 
 // therefore no lines should be written out during a blink
 						
@@ -111,24 +108,52 @@ size_t newProcessData(files filenames, string filename,
 
 					eye.extractData(line);
 					
-					if ((eye.isMSG() != true) && (eye.g_time() >= trialSet.g_startExport()) && 
-						(eye.g_time() <= trialSet.timeIsUp())) {
-						if (eye.isValid()){
+					if ((eye.isMSG() != true) && (eye.isValid()) 
+						&& (eye.g_time() >= trialSet.g_startExport()) 
+						&& (eye.g_time() <= trialSet.timeIsUp())) {
 							// participants with no interpolation can go without problems
-							if (trialSet.g_subject() != interpolation.sub()) {
+						if (trialSet.g_subject() != interpolation.sub()) {
+							trialSet.addOneBin();
+							writeOut(eye, outputfile, trialSet);
+						} else {  
+							// if time outside interpolation range write out, 
+							// otherwise interpolate
+							if (eye.g_time() <= interpolation.iBegin() 
+								|| eye.g_time() > interpolation.iEnd()) {
 								trialSet.addOneBin();
-								writeOut(eye, outputfile, trialSet);
-							} else {  
-								if (eye.g_time() <= interpolation.iBegin()) {
-									trialSet.addOneBin();
-									writeOut(eye, outputfile, trialSet); } // end if-else: if (trialSet.g_subject() != interpolation.sub())
-							} // end: if(eye.isValid())
-						} // end : if((eye.isMSG() != true) && (eye.g_time() >= (trialSet.g_targetOnset() - timeBefore)) && (eye.g_time() <= trialSet.timeIsUp()))
+								writeOut(eye, outputfile, trialSet); 
+							} else {
+								trialSet = interpolateBlinks(trialInfoFile, eyetrackingFile, outputfile,
+																						 trialSet, preBlink, interpolation, lock2);
+								
+								// make sure current eyeData are sinked with what has been exported
+	// 						cout << trialSet.g_updateInterp() << 'i';
+								if (trialSet.g_updateInterp()) {
+									// read eyetrackingFile's lines up to the end of the current interpolation interval
+									if (trialSet.g_subject() == interpolation.sub() && 
+										trialSet.g_currentTr() == interpolation.nTrial()){
+										while (eye.g_time() < interpolation.iEnd()){
+											getline(eyetrackingFile, line);
+											eye.extractData(line); } }
+									// update information about the next interpolation
+									string line1, line2;
+									getline(interpInfo, line1);
+									getline(interpInfo, line2);
+									interpolation.setSub("none");
+									if (interpInfo.good())
+										interpolation = interpolation.extractInterpData(line1, line2);
+		// 							cout << interpolation.nTrial() << ' ' << trialSet.g_currentTr() << 
+		// 								' ' << interpolation.sub() << '\n'; 
+									trialSet.updateInterp(false);
+									getline(eyetrackingFile, line);
+								} // end: if (trialSet.g_updateInterp())
+							} // END: "if (eye.g_time() <= interpolation.iBegin() ...
+						} // end: if(eye.isValid())
 					} // end of "if (!eye.isMSG && (eye.g_time() >= trialSet.g_targetOnset()))"
 					
-					if ((line.find("SFIX") != string::npos) && 
-						(eye.g_time() >= trialSet.g_startExport()) && 
-						(eye.g_time() <= trialSet.timeIsUp()))
+					if ((line.find("SFIX") != string::npos) 
+						&& (eye.g_time() >= trialSet.g_startExport()) 
+						&& (eye.g_time() <= trialSet.timeIsUp()))
 						trialSet.setFix(trialSet.g_Fix() + 1);
 							
 					preBlink = eye;

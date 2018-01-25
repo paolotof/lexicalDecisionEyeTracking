@@ -1,0 +1,15 @@
+#include <iostream>
+#include <string>
+#include <fstream> // this is to open text files
+#include <sstream> // to use isstringstream functionality
+
+namespace Icmbuild
+{
+    extern char version[];
+    extern char years[];
+    extern char author[];
+};
+
+void usage(std::string const &progname);
+
+using namespace std;

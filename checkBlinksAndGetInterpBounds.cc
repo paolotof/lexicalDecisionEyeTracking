@@ -29,10 +29,8 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameOutputfile,
   ofstream updatedTrialInfoFile;
   updatedTrialInfoFile.open(TrialInfoFile);
 	
-  ofstream longBlinksReport;
-  longBlinksReport.open(nameOutputfile.append("blinksPerSubject.txt")); 
+	nameOutputfile.append("blinksPerSubjectSmaller300.txt"); 
   ofstream shortBlinksReport;
-	nameOutputfile.replace(nameOutputfile.find(".txt"), 4, "Smaller300.txt");
 	shortBlinksReport.open(nameOutputfile);  
 // 	cout << nameOutputfile << '\n';
 	string trialInfo;
@@ -62,8 +60,8 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameOutputfile,
 				if (line.find(lock2) != string::npos)	
 					trialSet.updateCurrentTrial(line);
 
-// TRIAL ENDS - update trial information/reset arrays
 				if (trialSet.g_currentTr() == trialSet.g_trialIN()){
+// TRIAL ENDS - update trial information/reset arrays
 					if (line.find("TRIAL ENDS") != string::npos) {
 						if (includeTrial)
 							updatedTrialInfoFile << trialInfo << '\n';
@@ -248,7 +246,6 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameOutputfile,
   
   fileWithTrialInfo.close();
   updatedTrialInfoFile.close();
-  longBlinksReport.close();
   shortBlinksReport.close();
 	cout << '\n';
 // 	return TrialInfoFile; // nameOutputfile;

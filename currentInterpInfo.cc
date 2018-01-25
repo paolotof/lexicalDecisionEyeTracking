@@ -21,7 +21,7 @@ Interpdata currentInterpInfo(TrialInfo trialSet, files filenames){
 			&& trialSet.g_currentTr() != interpolation.nTrial()
 			&& not interpInfo.eof()){
 			string line1, line2;
-			getline(interpInfo, line1);
+			getline(interpInfo, line1); // reads 2 lines at the time because paired
 			getline(interpInfo, line2);
 			interpolation.setSub("none");
 			if (interpInfo.good()){

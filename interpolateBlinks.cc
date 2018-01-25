@@ -8,12 +8,8 @@
  * 
  * 
  */
-
-// TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, ofstream& outputfile, 
-// 														TrialInfo trialSet, Dataline preBlink, Interpdata interpolation, 
-// 														size_t timeBefore, string& lock2)
 TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, 
-														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, string& lock2){ 
+														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, Interpdata interpolation, string& lock2){ 
   string line;
 	// loop until end of blink message is found
   while (getline(eyetrackingFile, line)) {
@@ -48,6 +44,9 @@ TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile,
     size_t lines2interpolate = blinkDur / 4;
 		interpolateShortBlinks(outputfile, trialSet, preBlink, postBlink, lines2interpolate);
 		trialSet.updateBinCount(lines2interpolate); }
+	if (blinkDur > 20 && blinkDur <= 300) {
+		trialSet.updateInterp(interpolateLongBlinks(outputfile, trialSet, interpolation));
+	}
     
   return(trialSet);
 }
