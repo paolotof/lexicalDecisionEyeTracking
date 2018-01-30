@@ -34,7 +34,8 @@ try {
 			>> psize >> fix;
 // 		cout << pp;
 		if (previousPP == pp && previousTrial == trial)
-			outFile << pp << " " << trial << " "  << (time - previousTime) << '\n';
+			outFile << pp << " " << clockTime << " " << trial << " " 
+			<< (time - previousTime) << '\n';
 		
 		previousPP = pp;
 		previousTrial = trial;

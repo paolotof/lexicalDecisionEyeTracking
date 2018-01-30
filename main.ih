@@ -4,6 +4,7 @@
 #include <sstream> // to use isstringstream functionality
 #include <vector>
 #include <iomanip> // to keep the format of numbers right
+#include <cmath> // for round in binTimeInterval, and ceil in interpolation
 
 namespace Icmbuild
 {
@@ -24,11 +25,11 @@ using namespace std;
 
 struct files {
 	string TrialInfoFile;
-	string nameOutputfile; 
+	string nameInterpolationFile; 
 };
 
-// string checkBlinksAndGetInterpBounds(string filename, string nameOutputfile, string& lock2);
-files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameOutputfile, string& lock2);
+// string checkBlinksAndGetInterpBounds(string filename, string nameInterpolationFile, string& lock2);
+files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolationFile, string& lock2);
 
 double vectorMedian(vector<double> dataArray);
 
@@ -38,7 +39,7 @@ size_t newProcessData(files filenames, string filename,
 									 size_t timeBefore, string& lock2, 
 									 size_t limit4extraction, string& filePrefix);
 
-Interpdata currentInterpInfo(TrialInfo trialSet, files filenames);
+// Interpdata currentInterpInfo(TrialInfo trialSet, files filenames);
 
 TrialInfo interpolateBlinks(ifstream& trialInfoFile, ifstream& eyetrackingFile, 
 														ofstream& outputfile, TrialInfo trialSet, Dataline preBlink, 

@@ -7,7 +7,7 @@ bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata 
 //   cout << "L";
   bool updateInterp = false;
   // interpolate
-  size_t lines2interp = (interpolation.iEnd() - interpolation.iBegin()) / 4; // is this always a round number?
+	size_t lines2interp = ceil((interpolation.iEnd() - interpolation.iBegin()) / 4);
   double dataArray[4] = {0, 0, 0, 0};
 // 	for (double iter = lines2interp; iter > 0; --iter)
 	for (double iter = lines2interp; iter >= 0; --iter)
@@ -20,9 +20,8 @@ bool interpolateLongBlinks(ofstream& outputfile, TrialInfo trialSet, Interpdata 
 				     iter/lines2interp);
     dataArray[3] = linearInterpolate(interpolation.endP(), interpolation.begP(), 
 				     iter/lines2interp);
-// 		if ((dataArray[0] >= (trialSet.g_targetOnset() - timeBefore)) && (dataArray[0] <= trialSet.timeIsUp()))
-		if ((dataArray[0] >= trialSet.g_startExport()) && (dataArray[0] <= trialSet.timeIsUp()))
-		{ // time of interest boundaries
+		// time of interest boundaries
+		if ((dataArray[0] >= trialSet.g_startExport()) && (dataArray[0] <= trialSet.timeIsUp())){
 			trialSet.addOneBin();
 			// writeOut uses the eye.g_time() and eye.g_psie() of Dataline structure, so let's update those so that it works:
 			Dataline eye;

@@ -23,49 +23,50 @@ try
 	files filenames; 
 	filenames = checkBlinksAndGetInterpBounds(TrialInfoFile, outputfile, lock2);
 	
-// 	size_t timeBefore = 500; // check if this is used in the function
-// 	size_t limit4extraction = 4000;
-// 	outputfile += std::to_string(timeBefore);
-// // 	
-// // // 	TrialInfoFile.replace(TrialInfoFile.find(".txt"), 4, "_noBlinks.txt");
-// // // 	see line 20
-// // 	TrialInfoFile = filenames.TrialInfoFile;
-// // 	string interpolationFile = filenames.nameOutputfile; 
-// // 	
-// // 	interpolationFile = eliminateRedundantTrials(TrialInfoFile, interpolationFile);
-// // 	if (interpolationFile.find("none") != string::npos)
-// // 		return 0;
-// // 	
-// // // 	return 0;
-// // 	cout << TrialInfoFile << '\n';
-// // 	cout << interpolationFile << '\n';
+	size_t timeBefore = 500; // check if this is used in the function
+	size_t limit4extraction = 4000;
+	outputfile += std::to_string(timeBefore);
+	
+// 	TrialInfoFile.replace(TrialInfoFile.find(".txt"), 4, "_noBlinks.txt");
+// 	see line 20
+	TrialInfoFile = filenames.TrialInfoFile;
+	string interpolationFile = filenames.nameInterpolationFile; 
+	
+	interpolationFile = eliminateRedundantTrials(TrialInfoFile, interpolationFile);
+	if (interpolationFile.find("none") != string::npos)
+		return 0;
+	
+// 	return 0;
+// 	cout << TrialInfoFile << '\n';
+// 	cout << interpolationFile << '\n';
 // 	
-// // 	TrialInfoFile = "trials2beIncluded_withErrors_noBlinks.txt";
-// // 	string interpolationFile = "clean_RT_wrongR2_blinksPerSubjectSmaller300.txt";
+// 	TrialInfoFile = "trials2beIncluded_withErrors_noBlinks.txt";
+// 	string interpolationFile = "clean_RT_wrongR2_blinksPerSubjectSmaller300.txt";
 // 
-// // 	files filenames;
-// // 	filenames.TrialInfoFile = TrialInfoFile;
-// // 	filenames.nameOutputfile= interpolationFile;
+// 	files filenames;
+// 	filenames.TrialInfoFile = TrialInfoFile;
+// 	filenames.nameInterpolationFile= interpolationFile;
 // 	
-// // 	return 0;
-// 	newProcessData(filenames, outputfile, timeBefore, 
-// 							lock2, limit4extraction, filePrefix);
-// 	
-// 	//extractSaccades(TrialInfoFile, outputfile, lock2);
-// // 	string tmp = outputfile;
-// // 	tmp.append("_ALL_medianInterp.asc");
-// // 	binData(tmp, 5); //lines2bin = 5
-// // 	cout << "\n\n ---- BASELINES ---- \n\n";
-// // 	lock2 = "onsetSoundStim";
-// // 	cout << "Baseline Before " << lock2 << " 1st trial ONLY\n\n";
-// // 	size_t baselineInt = 200;
-// // 	averageFirst200(outputfile, baselineInt, lock2);
-// // 	cout << "Baseline Before " << lock2 << " Every Trial\n\n";
-// // 	average200BeforeVisualOnset(outputfile, baselineInt, lock2);
-// // 	cout << "Baseline Before Every Word onset\n\n";	
-// // 	string eye2read = outputfile +
-// // 		"_ALL_medianInterp.asc";
-// // 	baselineBeforeTarget(outputfile, eye2read, baselineInt);
+// 	return 0;
+	
+	newProcessData(filenames, outputfile, timeBefore, 
+							lock2, limit4extraction, filePrefix);
+	
+	//extractSaccades(TrialInfoFile, outputfile, lock2);
+// 	string tmp = outputfile;
+// 	tmp.append("_ALL_medianInterp.asc");
+// 	binData(tmp, 5); //lines2bin = 5
+// 	cout << "\n\n ---- BASELINES ---- \n\n";
+// 	lock2 = "onsetSoundStim";
+// 	cout << "Baseline Before " << lock2 << " 1st trial ONLY\n\n";
+// 	size_t baselineInt = 200;
+// 	averageFirst200(outputfile, baselineInt, lock2);
+// 	cout << "Baseline Before " << lock2 << " Every Trial\n\n";
+// 	average200BeforeVisualOnset(outputfile, baselineInt, lock2);
+// 	cout << "Baseline Before Every Word onset\n\n";	
+// 	string eye2read = outputfile +
+// 		"_ALL_medianInterp.asc";
+// 	baselineBeforeTarget(outputfile, eye2read, baselineInt);
 	
 	return 0; // skip this, takes too long
 // 	string outputfileName = filePrefix + "eyeData_Baseline123.asc";
