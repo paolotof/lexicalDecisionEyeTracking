@@ -3,18 +3,18 @@
  * remove trials that should not be interpolated from the interpolation file
 */
 
-string eliminateRedundantTrials(string& trial2beIncluded, string& interpolationFile) {
+string eliminateRedundantTrials(files filenames) {
 	cout << "deleting trials which do not match between interpInfo and trialInfoFile\n";
-	ifstream trialInfoFile(trial2beIncluded);
+	ifstream trialInfoFile(filenames.TrialInfoFile);
 	if (not trialInfoFile.is_open())	{
-		cout << "Unable To Open "<< trial2beIncluded << '\n';
+		cout << "Unable To Open "<< filenames.TrialInfoFile << '\n';
 		return "none";	}
-	ifstream interpInfo(interpolationFile);
+	ifstream interpInfo(filenames.nameInterpolationFile);
 	if (not interpInfo.is_open())	{
-		cout << "NO interpolation file "<< interpolationFile << '\n';
+		cout << "NO interpolation file "<< filenames.nameInterpolationFile << '\n';
 		return "none"; 	}
 	string newInterpolationFile = "clean_"; 
-	newInterpolationFile += interpolationFile;
+	newInterpolationFile += filenames.nameInterpolationFile;
 	ofstream outputfile(newInterpolationFile);
 	if (not outputfile.is_open())	{
 		cout << "NO OUTPUT FILE\n";

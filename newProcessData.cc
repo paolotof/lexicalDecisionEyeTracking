@@ -78,7 +78,6 @@ size_t newProcessData(files filenames, string filename,
 // 							while (trialSet.g_subject() != interpolation.sub()
 // 								&& trialSet.g_currentTr() != interpolation.nTrial()){
 						while (true){
-									// 							&& not interpInfo.eof()){
 							if (interpInfo.eof())
 								break;
 							getline(interpInfo, line1); // reads 2 lines at the time because paired
@@ -88,7 +87,9 @@ size_t newProcessData(files filenames, string filename,
 								interpolation = interpolation.extractInterpData(line1, line2); 
 								interpolation.setDoInterpolation(true); } 
 							if (trialSet.g_subject() == interpolation.sub()
-							&& trialSet.g_currentTr() == interpolation.nTrial())
+								&& trialSet.g_currentTr() == interpolation.nTrial()
+								&& interpolation.iEnd() > eye.g_time() // sometimes the interpolation info is before the trial starts
+							)
 								break;
 						}
 						outputfile << line2 << '\n';		
@@ -108,12 +109,23 @@ size_t newProcessData(files filenames, string filename,
 					if (line.find("SBLINK") != string::npos){
 						trialSet = interpolateBlinks(trialInfoFile, eyetrackingFile, outputfile,
 																				 trialSet, preBlink, interpolation, lock2);
+						// interpolation information must be updated too:
+						// in the cases in which interpolation information are before the export
+						// interval otherwise the interpolation information sticks with the
+						// time interval before the export period
+						if (trialSet.g_subject() == interpolation.sub()  
+							&& trialSet.g_currentTr() == interpolation.nTrial()
+							&& (preBlink.g_time() > interpolation.iEnd())){
+							outputfile << "should be updating interpolation" << '\n';
+							trialSet.updateInterp(true);
+						}
 						if (trialSet.g_updateInterp()){
 							// read eyetrackingFile's lines up to the end of the current interpolation interval
 							if (trialSet.g_subject() == interpolation.sub() && 
 								trialSet.g_currentTr() == interpolation.nTrial()){
 								while (eye.g_time() < interpolation.iEnd()){
-									getline(eyetrackingFile, line);
+// 								while (eye.g_time() <= interpolation.iEnd()){ // or does it skip a line like this?
+									getline(eyetrackingFile, line); // this does not seem to make a difference
 									eye.extractData(line); } }
 							// update information about the next interpolation
 							string line1, line2;
@@ -123,16 +135,24 @@ size_t newProcessData(files filenames, string filename,
 // therefore the interp info is printed after the intrepolation itself							
 // 							outputfile << line1 << '\n';
 // 							outputfile << line2 << '\n';
+							outputfile << line2 << '\n';
 							interpolation.setSub("none"); // this is here if something goes wrong with extractInterpData
 							if (interpInfo.good())
 								interpolation = interpolation.extractInterpData(line1, line2);
-							// 							cout << interpolation.nTrial() << ' ' << trialSet.g_currentTr() << 
-							// 								' ' << interpolation.sub() << '\n'; 
+							outputfile << interpolation.nTrial() << ' ' << trialSet.g_currentTr() 
+								<< ' ' << interpolation.sub() << ' ' << trialSet.g_subject() << '\n'; 
 							trialSet.updateInterp(false);
-							getline(eyetrackingFile, line);
+							getline(eyetrackingFile, line); // already done, why again?
 						} // end: if (trialSet.g_updateInterp())
 					} // end "if (line.find("SBLINK") != string::npos)"
-// extract data and write out if possible
+// this was:
+// extract data and write out data if possible
+// but became:
+//					 and write out data if possible
+// because in some cases we need to update the file with interpolation information before the trial starts.
+// the neatest solution would be to remove interpolation information for the time interval which should not 
+// be included in the extraction interval
+					// for now we put it back as it was...
 					eye.extractData(line);
 					if ((eye.isMSG() != true) && (eye.isValid()) 
 						&& (eye.g_time() >= trialSet.g_startExport()) 
@@ -175,8 +195,12 @@ size_t newProcessData(files filenames, string filename,
 									getline(eyetrackingFile, line);
 								} // end: if (trialSet.g_updateInterp())
 							} // END: "if (eye.g_time() <= interpolation.iBegin() ...*/
-						} // end: if(eye.isValid())
-					} // end of "if (!eye.isMSG && (eye.g_time() >= trialSet.g_targetOnset()))"
+						} // END: (trialSet.g_subject() != interpolation.sub())
+					} //END: of "if ((eye.isMSG() != true) && (eye.isValid()) ...."
+					
+					// extract data and write out data if possible
+					// for now we put it back as it was
+// 					eye.extractData(line);
 					
 					if ((line.find("SFIX") != string::npos) 
 						&& (eye.g_time() >= trialSet.g_startExport()) 
@@ -210,6 +234,7 @@ size_t newProcessData(files filenames, string filename,
 // 							interpolation = interpolation.extractInterpData(line1, line2);
 // 					}// if (interpolation.interpolate() && ...
 				} // end of "if (iTrial == trialSet.g_trialIN())"
+				eye.extractData(line);	// maybe this is not necessary
       } // end of "while(getline(eyetrackingFile, line))"
     } // end "if(! eyetrackingFile.is_open()") 
     

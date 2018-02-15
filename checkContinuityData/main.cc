@@ -25,7 +25,7 @@ try {
 	previousPP = pp;
 	previousTrial = trial;
 	previousTime = time;
-	outFile << "pp trial diff\n";
+	outFile << "pp clockTime trial diff\n";
 	while (getline(processedFile, line1)){
 		linedata.str("");
 		linedata.clear();

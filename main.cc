@@ -19,7 +19,7 @@ try
 // 	return 0;
 	string lock2 = "STARTS";
 	
-	// to skip this step you need to define filanames see line: 46
+// 	to skip this step you need to define filanames see line: 46
 	files filenames; 
 	filenames = checkBlinksAndGetInterpBounds(TrialInfoFile, outputfile, lock2);
 	
@@ -27,26 +27,22 @@ try
 	size_t limit4extraction = 4000;
 	outputfile += std::to_string(timeBefore);
 	
-// 	TrialInfoFile.replace(TrialInfoFile.find(".txt"), 4, "_noBlinks.txt");
-// 	see line 20
-	TrialInfoFile = filenames.TrialInfoFile;
-	string interpolationFile = filenames.nameInterpolationFile; 
-	
-	interpolationFile = eliminateRedundantTrials(TrialInfoFile, interpolationFile);
-	if (interpolationFile.find("none") != string::npos)
-		return 0;
+// 	TrialInfoFile = filenames.TrialInfoFile;
+// 	string filenames.nameInterpolationFile = filenames.nameInterpolationFile; 
+// 	
+// 	THIS seems to remove too many trials, either check what's wrong or do not use
+// 	filenames.nameInterpolationFile = eliminateRedundantTrials(filenames);
+// 	if (filenames.nameInterpolationFile.find("none") != string::npos)
+// 		return 0;
 	
 // 	return 0;
 // 	cout << TrialInfoFile << '\n';
-// 	cout << interpolationFile << '\n';
+// 	cout << filenames.nameInterpolationFile << '\n';
 // 	
-// 	TrialInfoFile = "trials2beIncluded_withErrors_noBlinks.txt";
-// 	string interpolationFile = "clean_RT_wrongR2_blinksPerSubjectSmaller300.txt";
-// 
 // 	files filenames;
-// 	filenames.TrialInfoFile = TrialInfoFile;
-// 	filenames.nameInterpolationFile= interpolationFile;
-// 	
+// 	filenames.TrialInfoFile = "trials2beIncluded_withErrors_noBlinks.txt";
+// 	filenames.nameInterpolationFile = "clean_RT_wrongR2_blinksPerSubjectSmaller300.txt";
+
 // 	return 0;
 	
 	newProcessData(filenames, outputfile, timeBefore, 

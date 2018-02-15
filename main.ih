@@ -75,8 +75,12 @@ double matchBaselines(string& pp, size_t trial, string baseline2read);
 
 // void ERDD_withBase123(string& outputfileName, size_t timeBefore);
 void ERDD_withBase123(string& filePrefix, string& outputfileName, size_t timeBefore, size_t baselineInt);
-size_t baselineBeforeTarget(string filename, string& eye2read, 
-														size_t interval4baseline);
-string eliminateRedundantTrials(string& trial2beIncluded, string& interpolationFile);
+size_t baselineBeforeTarget(string filename, string& eye2read, size_t interval4baseline);
+string eliminateRedundantTrials(files filenames);
 
 size_t extractSaccades(string TrialInfoFile, string filename, string& lock2);
+
+void exportInterpolation(string&	nameInterpolationFile, double blinkDuration, 
+		TrialInfo trialSet, double tVect, double xVect, double yVect, double pVect, 
+		double medianT, double medianX, double medianY, double medianP);
+
