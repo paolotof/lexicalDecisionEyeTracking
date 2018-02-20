@@ -30,20 +30,19 @@ size_t newProcessData(files filenames, string filename,
 	outputfile.open(filename);
 // write file's header
 	outputfile << "pp" << '\t' << "clockTime" << '\t'  << "time" << '\t'
-		<<  "wordNonWord" << '\t' << "trial" << '\t' 
-		<< "item" << '\t' << "psize"  << '\t' << "fix\n";  
-	
+// 		<<  "wordNonWord" << '\t' 
+		<< "trial" << '\t' 
+		// << "item" << '\t' // removed item because we have trial number already, file is smaller
+		<< "psize"  << '\t' << "fix\n";  
+		
   while (true)
   {
 // use experiment records to open eyetracking datafile for reading
     ifstream eyetrackingFile(subNum.append(".asc"));
-    if (! eyetrackingFile.is_open())
-    {
+    if (! eyetrackingFile.is_open()) {
       cout << "Unable to open eyetracking datafile " << subNum << '\n'; 
       break;
-    }
-    else
-    {
+    } else {
 			cout << "Extracting " << subNum << '\n';
 			trialSet.setCurrentTr(0);
       trialSet.resetBinsCounter();
@@ -63,7 +62,7 @@ size_t newProcessData(files filenames, string filename,
 					// the reading of the interpolationInfo file does not proceed here, but within
 					// the function call, it needs to be updated here too. Let's not use the function
 						// start from the beginning closing and opening the file
-						outputfile << " interp " << trialSet.g_currentTr() << ' ' << trialSet.g_trialIN() << '\n';
+// 						outputfile << " interp " << trialSet.g_currentTr() << ' ' << trialSet.g_trialIN() << '\n';
 						interpInfo.close(); 
 						interpInfo.open(filenames.nameInterpolationFile);
 						// read first two lines to create an antecedent for the match operation
@@ -92,7 +91,7 @@ size_t newProcessData(files filenames, string filename,
 							)
 								break;
 						}
-						outputfile << line2 << '\n';		
+// 						outputfile << line2 << '\n';		
 					} // END: if (trialSet.g_currentTr() == trialSet.g_trialIN()){
 				} // END: if (line.find(lock2) != string::npos){
 				
@@ -115,10 +114,10 @@ size_t newProcessData(files filenames, string filename,
 						// time interval before the export period
 						if (trialSet.g_subject() == interpolation.sub()  
 							&& trialSet.g_currentTr() == interpolation.nTrial()
-							&& (preBlink.g_time() > interpolation.iEnd())){
-							outputfile << "should be updating interpolation" << '\n';
+							&& (preBlink.g_time() > interpolation.iEnd()))//{
 							trialSet.updateInterp(true);
-						}
+// 							outputfile << "should be updating interpolation" << '\n';
+// 						}
 						if (trialSet.g_updateInterp()){
 							// read eyetrackingFile's lines up to the end of the current interpolation interval
 							if (trialSet.g_subject() == interpolation.sub() && 
@@ -135,14 +134,15 @@ size_t newProcessData(files filenames, string filename,
 // therefore the interp info is printed after the intrepolation itself							
 // 							outputfile << line1 << '\n';
 // 							outputfile << line2 << '\n';
-							outputfile << line2 << '\n';
 							interpolation.setSub("none"); // this is here if something goes wrong with extractInterpData
 							if (interpInfo.good())
 								interpolation = interpolation.extractInterpData(line1, line2);
-							outputfile << interpolation.nTrial() << ' ' << trialSet.g_currentTr() 
-								<< ' ' << interpolation.sub() << ' ' << trialSet.g_subject() << '\n'; 
+// 							outputfile << interpolation.nTrial() << ' ' << trialSet.g_currentTr() 
+// 								<< ' ' << interpolation.sub() << ' ' << trialSet.g_subject() << '\n'; 
 							trialSet.updateInterp(false);
 							getline(eyetrackingFile, line); // already done, why again?
+							// should this also look until it does not find a match?
+							
 						} // end: if (trialSet.g_updateInterp())
 					} // end "if (line.find("SBLINK") != string::npos)"
 // this was:

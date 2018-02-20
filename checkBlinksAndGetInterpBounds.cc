@@ -21,19 +21,22 @@
  * 
  */
 
-files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolationFile, 
-																		 string& lock2){
-	cout << "Blinks and interpolation\n";
-	ifstream fileWithTrialInfo(TrialInfoFile);
+// files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolationFile, 
+// 																		 string& lock2){
+files checkBlinksAndGetInterpBounds(files filenames, string& lock2){
+	cout << "Blinks and interpolation files used\n" 
+	<< filenames.TrialInfoFile << ' ' 
+	<< filenames.nameInterpolationFile << '\n';
+	ifstream fileWithTrialInfo(filenames.TrialInfoFile);
 	if (not fileWithTrialInfo.is_open()) {
-		cout << "Unable to open " << TrialInfoFile << '\n';
+		cout << "Unable to open " << filenames.TrialInfoFile << '\n';
 		files filenames;
 		return (filenames);}
-	TrialInfoFile.replace(TrialInfoFile.find(".txt"), 4, "_noBlinks.txt");
+	filenames.TrialInfoFile.replace(filenames.TrialInfoFile.find(".txt"), 4, "_noBlinks.txt");
   ofstream updatedTrialInfoFile;
-  updatedTrialInfoFile.open(TrialInfoFile);
+  updatedTrialInfoFile.open(filenames.TrialInfoFile);
 	
-	nameInterpolationFile.append("blinksPerSubjectSmaller300.txt"); 
+// 	filenames.nameInterpolationFile.append("blinksPerSubjectSmaller300.txt"); 
 //   ofstream shortBlinksReport;
 // 	shortBlinksReport.open(nameInterpolationFile);  
 // 	cout << nameInterpolationFile << '\n';
@@ -53,11 +56,16 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
       vector<double> tVect, xVect, yVect, pVect;
 // 			size_t nLines2interpolate = 50; // lines to include for       
 			size_t nLines2interpolate = 25; // lines to include for interpolation
-      double medianT, medianX, medianY, medianP;
-      string line;
+			// this gives a warning
+			//double medianT, medianX, medianY, medianP;
+			double medianT = -1;
+			double medianX = -1; 
+			double medianY = -1; 
+			double medianP = -1;
+			string line;
       Dataline eye;
       //size_t onsetWord = 0;
-      double blinkDuration = 0;
+      double blinkDuration = 0; 
 			// subject 8 gets out of the while loop before the file is finished!
       while (getline(eyetrackingFile, line)) {
 // TRIAL STARTS
@@ -102,15 +110,19 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
 					if (line.find("EBLINK") != string::npos){
 						istringstream linedata(line); // extract time information from the datafile
 						string msgType, side;
-						double blinkBegin, blinkEnd;
-						linedata >> msgType >> side >> blinkBegin >> blinkEnd;
+						double blinkBegin, blinkEnd, durationBlink;
+						linedata >> msgType >> side >> blinkBegin >> blinkEnd >> durationBlink;
 						
 						if ((blinkEnd >= trialSet.g_startExport()) 
 							&& (blinkBegin <= trialSet.timeIsUp())){
-							blinkDuration = blinkEnd - blinkBegin;
-							if (blinkEnd >= trialSet.timeIsUp())
+							
+							// blinkDuration = blinkEnd - blinkBegin;
+							blinkDuration = durationBlink;
+							// limit blink durations to the boundaries of the time interval of interest
+							// 15-2-2018 removed the equal signs from the boundaries
+							if (blinkEnd > trialSet.timeIsUp())
 								blinkDuration = trialSet.timeIsUp() - blinkBegin;
-							if (blinkBegin <= trialSet.g_startExport())
+							if (blinkBegin < trialSet.g_startExport())
 								blinkDuration = blinkEnd - trialSet.g_startExport();
 							// 2) If length of the blink from onset word is 
 							// 	2.b > 300 ms - exclude 
@@ -121,12 +133,15 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
 								includeTrial = false;
 							} else {
 								// if includeTrial is already false none of this should be done!
-								if (includeTrial){
+								// moreover, we do not what interpolation information for blinks shorter than 20ms
+								if (includeTrial && (blinkDuration > 20)){
 									// includeTrial is not set true again because if there is one blink that is 
 									// longer than 300 ms the trial should not be included also if the blinks 
 									// after are shorter than 300 ms
 									exportInterpolationData = true;
-									// get other 25 lines of data to get the median of
+									// get other 25 lines of data to get the median of, however mind whether 
+									// 1 - a new blinks starts
+									// 2 - a new trial starts
 									for (size_t lines2skip = 0; lines2skip < nLines2interpolate; lines2skip++) {
 										getline(eyetrackingFile, line);
 										// Before nLines2interpolate are included in the array it can happen that:
@@ -135,6 +150,12 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
 // 3 data are just added
 // 1										
 										if (line.find("TRIAL ENDS") != string::npos) {
+											// we should still export interpolation information even if we do not have 25
+											// lines
+											if (tVect.size() > 1)
+												exportInterpolation(filenames.nameInterpolationFile, blinkDuration, trialSet, 
+																						vectorMedian(tVect), vectorMedian(xVect), vectorMedian(yVect), vectorMedian(pVect), 
+																						medianT, medianX, medianY, medianP, 'S');	
 											// interrupt all extrapolation for current blink
 											vector<double>().swap(tVect);
 											vector<double>().swap(xVect);
@@ -162,9 +183,9 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
 	// export what you have up to here if you have more than one line!
 										if (line.find("SBLINK") != string::npos) {
 											if (tVect.size() > 1)
-												exportInterpolation(nameInterpolationFile, blinkDuration, trialSet, 
+												exportInterpolation(filenames.nameInterpolationFile, blinkDuration, trialSet, 
 																						vectorMedian(tVect), vectorMedian(xVect), vectorMedian(yVect), vectorMedian(pVect), 
-																						medianT, medianX, medianY, medianP);	
+																						medianT, medianX, medianY, medianP, 'S');	
 											
 											// update the line for the new interpolation
 											medianT = vectorMedian(tVect);
@@ -193,9 +214,9 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
 									} // END: for (size_t lines2skip = 0; lines2skip < nLines2interpolate; lines2skip++) 
 // Export data only if 'TRIAL ENDS' or 'SBLINK' messages were not encountered
 									if (exportInterpolationData) {
-										exportInterpolation(nameInterpolationFile, blinkDuration, trialSet, 
+										exportInterpolation(filenames.nameInterpolationFile, blinkDuration, trialSet, 
 												vectorMedian(tVect), vectorMedian(xVect), vectorMedian(yVect), vectorMedian(pVect), 
-												medianT, medianX, medianY, medianP);	
+												medianT, medianX, medianY, medianP, 'X');	
 										vector<double>().swap(tVect); // 
 										vector<double>().swap(xVect);
 										vector<double>().swap(yVect);
@@ -238,8 +259,11 @@ files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolati
 //   shortBlinksReport.close();
 	cout << '\n';
 // 	return TrialInfoFile; // nameInterpolationFile;
-	files filenames;
-	filenames.TrialInfoFile = TrialInfoFile;
-	filenames.nameInterpolationFile = nameInterpolationFile;
+// 	files filenames;
+// 	filenames.TrialInfoFile = TrialInfoFile;
+// 	filenames.nameInterpolationFile = nameInterpolationFile;
 	return filenames;
 }
+
+// 5945090
+// 5946522

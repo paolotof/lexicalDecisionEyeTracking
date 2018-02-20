@@ -1,14 +1,12 @@
 #include "main.ih"
 
-size_t baselineBeforeTarget(string filename, string& eye2read, size_t interval4baseline)
-{
+size_t baselineBeforeTarget(string filename, string& eye2read, size_t interval4baseline) {
 	cout << eye2read << " \n";
 	cout << "Computing baseline before AUDIO target onset\n";
 	ifstream eyetrackingFile(eye2read);
   if (!eyetrackingFile.is_open())
 		cout << "Unable to open " << eye2read << " \n";
-  else
-  { 
+  else { 
     ofstream outputfile;
 		string otherBitFilename = "averageBeforeTarget" + 
 			to_string(interval4baseline) + ".asc";
@@ -21,30 +19,22 @@ size_t baselineBeforeTarget(string filename, string& eye2read, size_t interval4b
 		// include in the vector which will be averaged 
 		// now read data
 		vector<double> psize;
-		while(getline(eyetrackingFile, eyeData))
-		{
-			string pp, wordNonWord, item;
+		while(getline(eyetrackingFile, eyeData)){
 			double clockTime, time, pupilSize, fix;
-			size_t trial; 
+			size_t pp, trial; 
 			istringstream linedata(eyeData);
-			linedata >> pp >> clockTime >> time >> wordNonWord 
-				>> trial >> item >> pupilSize >> fix;
-				
-			if ((time > 0.0) && (time <= 4.0))
-			{
+			linedata >> pp >> clockTime >> time
+				>> trial >> pupilSize >> fix;
+			if ((time > 0.0) && (time <= 4.0)){
 				outputfile << pp << '\t' << trial << '\t' << 
 					vectorMean(psize) << '\n';
-				vector<double>().swap(psize);
-			}
+				vector<double>().swap(psize); }
 			psize.push_back(pupilSize);
 			size_t nSamplesPerLine = 4;
 			size_t lines2include = interval4baseline / nSamplesPerLine;
 			if (psize.size() >= lines2include)
-				psize.erase(psize.begin());
-
-		} // end "while(getline(eyetrackingFile, subID))"
+				psize.erase(psize.begin()); } // END: "while(getline(eyetrackingFile, eyeData))"
     eyetrackingFile.close();
-    outputfile.close();
-  }
+    outputfile.close(); }
   return 1;
 }

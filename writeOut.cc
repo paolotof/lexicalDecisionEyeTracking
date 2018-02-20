@@ -14,10 +14,10 @@ void writeOut(Dataline eye, ofstream& outputfile, TrialInfo trialSet)
 	outputfile << '\t' << timeDif
 // 		<< '\t' << static_cast<int>(timeDif / 4)
 // 		<< '\t' << trialSet.totalBins()
-		<< '\t' << trialSet.g_condition() 
+// 		<< '\t' << trialSet.g_condition() 
 		<< '\t' << trialSet.g_trialIN() 
-    << '\t' << trialSet.g_target() 
-// 		we also got rid of x and y positions
+//     << '\t' << trialSet.g_target() // save space, we can merge later 
+// 		we got rid of x and y positions
     << '\t' << eye.g_psize()
 		<< '\t' << trialSet.g_Fix()
 // 		<< '\t' << trialSet.g_RT()

@@ -29,7 +29,8 @@ struct files {
 };
 
 // string checkBlinksAndGetInterpBounds(string filename, string nameInterpolationFile, string& lock2);
-files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolationFile, string& lock2);
+files checkBlinksAndGetInterpBounds(files filenames, string& lock2);
+void checkInterpolations(files filenames);
 
 double vectorMedian(vector<double> dataArray);
 
@@ -82,5 +83,5 @@ size_t extractSaccades(string TrialInfoFile, string filename, string& lock2);
 
 void exportInterpolation(string&	nameInterpolationFile, double blinkDuration, 
 		TrialInfo trialSet, double tVect, double xVect, double yVect, double pVect, 
-		double medianT, double medianX, double medianY, double medianP);
+		double medianT, double medianX, double medianY, double medianP, char type);
 

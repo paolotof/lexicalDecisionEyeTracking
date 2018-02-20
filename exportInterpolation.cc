@@ -3,7 +3,7 @@
 void exportInterpolation(string& nameInterpolationFile, double blinkDuration, 
 		TrialInfo trialSet, 
 		double tVect, double xVect, double yVect, double pVect, 
-		double medianT, double medianX, double medianY, double medianP){
+		double medianT, double medianX, double medianY, double medianP, char type){
 	
 	std::ofstream shortBlinksReport;
 	shortBlinksReport.open(nameInterpolationFile, std::ios_base::app);
@@ -21,6 +21,7 @@ void exportInterpolation(string& nameInterpolationFile, double blinkDuration,
 	shortBlinksReport << tVect; 
 	shortBlinksReport.precision(old_precision);
 	shortBlinksReport << ' ' << xVect << ' ' << yVect  << ' ' << pVect  
-	<< ' ' << blinkDuration / 4 << '\n'; // n. lines to interpolate
+	<< ' ' << blinkDuration << ' ' << &type << '\n'; // n. lines to interpolate, NOT, those are computed on the basis of the length of the interval.
+// 	<< ' ' << blinkDuration \ 4 << '\n'; // n. lines to interpolate, NOT, those are computed on the basis 
 	shortBlinksReport.close();
 }
