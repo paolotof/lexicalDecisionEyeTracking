@@ -83,5 +83,9 @@ size_t extractSaccades(string TrialInfoFile, string filename, string& lock2);
 
 void exportInterpolation(string&	nameInterpolationFile, double blinkDuration, 
 		TrialInfo trialSet, double tVect, double xVect, double yVect, double pVect, 
-		double medianT, double medianX, double medianY, double medianP, char type);
+		double medianT, double medianX, double medianY, double medianP); //, char type);
+// void exportInterpolation(string&	nameInterpolationFile, double blinkDuration, 
+// 			TrialInfo trialSet, double tVect, double xVect, double yVect, double pVect, 
+// 			double medianT, double medianX, double medianY, double medianP, 
+// 			const char *type);
 

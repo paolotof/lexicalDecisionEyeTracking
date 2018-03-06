@@ -155,7 +155,7 @@ files checkBlinksAndGetInterpBounds(files filenames, string& lock2){
 											if (tVect.size() > 1)
 												exportInterpolation(filenames.nameInterpolationFile, blinkDuration, trialSet, 
 																						vectorMedian(tVect), vectorMedian(xVect), vectorMedian(yVect), vectorMedian(pVect), 
-																						medianT, medianX, medianY, medianP, 'S');	
+																						medianT, medianX, medianY, medianP);//, 'S');	
 											// interrupt all extrapolation for current blink
 											vector<double>().swap(tVect);
 											vector<double>().swap(xVect);
@@ -185,7 +185,7 @@ files checkBlinksAndGetInterpBounds(files filenames, string& lock2){
 											if (tVect.size() > 1)
 												exportInterpolation(filenames.nameInterpolationFile, blinkDuration, trialSet, 
 																						vectorMedian(tVect), vectorMedian(xVect), vectorMedian(yVect), vectorMedian(pVect), 
-																						medianT, medianX, medianY, medianP, 'S');	
+																						medianT, medianX, medianY, medianP); //, 'S');	
 											
 											// update the line for the new interpolation
 											medianT = vectorMedian(tVect);
@@ -216,7 +216,7 @@ files checkBlinksAndGetInterpBounds(files filenames, string& lock2){
 									if (exportInterpolationData) {
 										exportInterpolation(filenames.nameInterpolationFile, blinkDuration, trialSet, 
 												vectorMedian(tVect), vectorMedian(xVect), vectorMedian(yVect), vectorMedian(pVect), 
-												medianT, medianX, medianY, medianP, 'X');	
+												medianT, medianX, medianY, medianP); //, 'X');	
 										vector<double>().swap(tVect); // 
 										vector<double>().swap(xVect);
 										vector<double>().swap(yVect);
