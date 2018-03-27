@@ -43,6 +43,7 @@ try {
 	}
 	outFile.close();
 	processedFile.close();
+	cout << "Check data continuity:: results were written to: " << processedFileName << '\n'; // this bit is included in the compiled version yet
 	return 1;
 }
 catch (...) { return 1; }

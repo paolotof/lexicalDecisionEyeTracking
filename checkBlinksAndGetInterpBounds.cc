@@ -23,10 +23,11 @@
 
 // files checkBlinksAndGetInterpBounds(string TrialInfoFile, string nameInterpolationFile, 
 // 																		 string& lock2){
-files checkBlinksAndGetInterpBounds(files filenames, string& lock2){
+files checkBlinksAndGetInterpBounds(files filenames, string& lock2, size_t nLines2interpolate){
 	cout << "Blinks and interpolation files used\n" 
 	<< filenames.TrialInfoFile << ' ' 
-	<< filenames.nameInterpolationFile << '\n';
+	<< filenames.nameInterpolationFile << '\n'
+	<< "lines to interpolate = " << nLines2interpolate << '\n';
 	ifstream fileWithTrialInfo(filenames.TrialInfoFile);
 	if (not fileWithTrialInfo.is_open()) {
 		cout << "Unable to open " << filenames.TrialInfoFile << '\n';
@@ -55,7 +56,7 @@ files checkBlinksAndGetInterpBounds(files filenames, string& lock2){
       bool includeTrial = true;
       vector<double> tVect, xVect, yVect, pVect;
 // 			size_t nLines2interpolate = 50; // lines to include for       
-			size_t nLines2interpolate = 25; // lines to include for interpolation
+// 			size_t nLines2interpolate = 25; // lines to include for interpolation
 			// this gives a warning
 			//double medianT, medianX, medianY, medianP;
 			double medianT = -1;

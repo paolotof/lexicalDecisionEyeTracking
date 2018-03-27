@@ -9,9 +9,12 @@ try
 	string TrialInfoFile = "trials2beIncluded.txt";
 	// these strings could also be added to the structure with the file names, it's cleaner
 // 	string TrialInfoFile = "trials2beIncluded_withErrors.txt";
+	size_t nLines2interpolate = 25;
 	if (argc == 2)
 		TrialInfoFile = argv[1];
-	if (argc > 2){
+	if (argc > 2)
+		nLines2interpolate = stoi(argv[2]);
+	if (argc > 3){
 		cout << "Too many input arguments to call!!";
 		return 0;
 	}
@@ -24,7 +27,7 @@ try
 	filenames.TrialInfoFile = TrialInfoFile;
 	filenames.nameInterpolationFile = outputfile 
 	+ "blinksPerSubjectSmaller300.txt";
-	filenames = checkBlinksAndGetInterpBounds(filenames, lock2);
+	filenames = checkBlinksAndGetInterpBounds(filenames, lock2, nLines2interpolate);
 	
 	size_t timeBefore = 500; // check if this is used in the function
 	size_t limit4extraction = 4000;

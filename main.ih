@@ -29,7 +29,7 @@ struct files {
 };
 
 // string checkBlinksAndGetInterpBounds(string filename, string nameInterpolationFile, string& lock2);
-files checkBlinksAndGetInterpBounds(files filenames, string& lock2);
+files checkBlinksAndGetInterpBounds(files filenames, string& lock2, size_t nLines2interpolate);
 void checkInterpolations(files filenames);
 
 double vectorMedian(vector<double> dataArray);
